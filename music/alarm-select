@@ -1,0 +1,70 @@
+#include <ArduinoRobot.h>
+#include <Wire.h>
+
+int currentAlarm = 0;
+int lastAlarm = -1; // Used to detect if the selection actually changed
+const int totalAlarms = 3;
+
+// Alarm melodies
+char alarm0[] = "4e 4e 4e 4- 4e 4e 4e 4- 4e 4g 4C 4d 4e 4f 4f 2-"; 
+char alarm1[] = "8c 8C 8c 8C 8c 8C 8c 8C 8c 8C";                   
+char alarm2[] = "16c 16- 16c 16- 16c 16- 16c 16-";                 
+
+char navClick[] = "32c"; 
+
+void setup() {
+  Robot.begin();
+  Robot.beginSpeaker();
+  Robot.beginTFT();
+  delay(500);
+}
+
+void loop() {
+  // 1. Read the knob (returns 0 to 1023)
+  int knobValue = Robot.knobRead();
+
+  // 2. Map the knob value to our alarm indices (0, 1, or 2)
+  currentAlarm = map(knobValue, 0, 1023, 0, totalAlarms - 1);
+
+  // 3. Only update the screen and play a click if the knob has moved to a NEW alarm
+  if (currentAlarm != lastAlarm) {
+    Robot.playMelody(navClick);
+    updateScreen();
+    lastAlarm = currentAlarm; // Save the current state
+  }
+
+  // 4. Use the middle button to "Select" and play the alarm
+  int buttonPressed = Robot.keyboardRead();
+  if (buttonPressed == BUTTON_MIDDLE) {
+    playSelectedAlarm();
+    delay(50); // Prevent double-triggering
+  }
+
+  delay(10); // Fast response for the knob
+}
+
+void updateScreen() {
+  Robot.clearScreen();
+  Robot.stroke(0, 0, 0); 
+  Robot.setTextSize(2);
+  
+  Robot.setCursor(10, 30);
+  Robot.print("KNOB SELECTOR");
+  
+  Robot.setCursor(10, 60);
+  Robot.print("Alarm: ");
+  Robot.print(currentAlarm + 1);
+  
+  // Visual progress bar based on knob position
+  int barWidth = map(Robot.knobRead(), 0, 1023, 0, 118);
+  Robot.rect(5, 90, 120, 10); // Outline
+  Robot.fill(0, 0, 255);      // Blue fill
+  Robot.rect(6, 91, barWidth, 8);
+  Robot.noFill();
+}
+
+void playSelectedAlarm() {
+  if (currentAlarm == 0) Robot.playMelody(alarm0);
+  else if (currentAlarm == 1) Robot.playMelody(alarm1);
+  else if (currentAlarm == 2) Robot.playMelody(alarm2);
+}
