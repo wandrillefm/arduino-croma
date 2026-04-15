@@ -10,6 +10,7 @@ Joue de la musique avec le buzzer:
 <li>alarmselect2: utilise le knob (à gauche de la prise usb control board) pour choisir et bouton milieu selectionner<br>
 <li>jinglebells
 <li>starwars
+<li>synth: "bouger" le knob et la frequence du son change
   
 ## Motors :
 est censé faire bouger le robot...
