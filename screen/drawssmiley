@@ -1,1 +1,47 @@
-um...
+#include <ArduinoRobot.h>
+#include <Wire.h>
+
+int selectionActuelle = 0;
+int derniereSelection = -1;
+
+void setup() {
+  Robot.begin();
+  Robot.beginTFT();
+  Robot.beginSpeaker();
+  
+  Robot.stroke(0, 0, 0);
+  Robot.clearScreen();
+}
+
+void loop() {
+  // 1. Lire la position du bouton rond
+  int valeurKnob = Robot.knobRead();
+
+  // 2. On divise la course du bouton en 10 crans (0 à 9)
+  // Cela permet de déclencher le beep seulement quand on tourne vraiment
+  selectionActuelle = map(valeurKnob, 0, 1023, 0, 9);
+
+  // 3. Si on tourne le bouton vers un nouveau cran
+  if (selectionActuelle != derniereSelection) {
+    
+    // On affiche le smiley
+    afficherSmiley();
+    
+    // On fait un beep court (une note très brève)
+    Robot.playMelody("32c"); 
+    
+    derniereSelection = selectionActuelle;
+  }
+
+  delay(10); // Petite pause pour la stabilité
+}
+
+void afficherSmiley() {
+  Robot.clearScreen();      // Efface l'écran
+  Robot.stroke(0, 0, 0);    // Couleur du texte : Noir
+  Robot.setTextSize(7);     // Taille géante pour le smiley
+  
+  // Centrage approximatif du ":)" sur l'écran 160x128
+  // X = 45, Y = 40
+  Robot.text(":)", 45, 40); 
+}
