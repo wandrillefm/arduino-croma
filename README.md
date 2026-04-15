@@ -5,4 +5,9 @@
 <li>Et upload directement (pas besoin de verifier)<br>
   
 ## Music :
-Joue de la musique
+Joue de la musique avec le buzzer: jinglebells et starwars
+## Motors :
+...
+## Screen :
+Affiche des trucs sur l'écran
+
