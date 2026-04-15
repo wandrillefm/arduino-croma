@@ -8,6 +8,16 @@
 Joue de la musique avec le buzzer:
 <li>alarmselect1: utilise les fleches (à droite de l'écran) pour choisir et bouton milieu selectionner<br>
 <li>alarmselect2: utilise le knob (à gauche de la prise usb control board) pour choisir et bouton milieu selectionner<br>
+<li>djset: Comment mixer comme un chef :<br>
+Le Knob (Bouton rond) : Tourne-le doucement pour changer la tonalité de la chanson. À gauche c'est très grave (Davy Jones), à droite c'est survolté.<br>
+
+Bouton HAUT : Appuie par petites touches pour rythmer la chanson avec des bips aigus.<br>
+
+Bouton BAS : Utilise-le sur le premier temps de chaque mesure (le "Pom" de Pom-Pom-Pom) pour rajouter de la puissance.<br>
+
+Bouton DROITE : C'est le "Scratch". Ça interrompt brièvement la mélodie pour faire un bruit de DJ.<br>
+
+Bouton GAUCHE : Si tu veux faire un "silence dramatique" avant de relâcher la sauce, reste appuyé dessus.<br>
 <li>jinglebells
 <li>piratesdescaraibes: joue le theme du film, intro seulement, et quelques fausses notes
 <li>starwars
