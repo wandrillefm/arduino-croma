@@ -1,0 +1,35 @@
+#include <ArduinoRobot.h>
+#include <Wire.h>
+
+// Le haut-parleur du Robot est sur la PIN 5
+#define SPEAKER_PIN 5
+
+int derniereValeur = -1;
+
+void setup() {
+  Robot.begin();
+  Robot.beginSpeaker(); 
+  // Pas besoin d'écran, on gagne en vitesse de calcul
+}
+
+void loop() {
+  // 1. Lire la position exacte du bouton (0 à 1023)
+  int valeurKnob = Robot.knobRead();
+
+  // 2. On ne joue un son que si le bouton a bougé (évite les grésillements)
+  // On ajoute une petite marge (seuil de 2) pour ignorer les micro-vibrations
+  if (abs(valeurKnob - derniereValeur) > 2) {
+    
+    // 3. MAP : On transforme 0-1023 en fréquence 100Hz (grave) à 3000Hz (aigu)
+    int frequence = map(valeurKnob, 0, 1023, 100, 3000);
+
+    // 4. Jouer le son
+    // tone(pin, fréquence, durée)
+    tone(SPEAKER_PIN, frequence, 20); 
+
+    derniereValeur = valeurKnob;
+  }
+
+  // Très courte pause pour laisser le processeur respirer
+  delay(10);
+}
