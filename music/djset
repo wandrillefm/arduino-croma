@@ -1,0 +1,98 @@
+#include <ArduinoRobot.h>
+#include <Wire.h>
+#include <avr/pgmspace.h>
+
+#define SPEAKER_PIN 5
+
+// --- 1. DÉFINITION DES FRÉQUENCES (Le dictionnaire que ton code cherchait) ---
+#define NOTE_A3  220
+#define NOTE_AS3 233
+#define NOTE_C4  262
+#define NOTE_CS4 277
+#define NOTE_D4  294
+#define NOTE_E4  330
+#define NOTE_F4  349
+#define NOTE_G4  392
+#define NOTE_A4  440
+#define NOTE_AS4 466
+#define NOTE_C5  523
+#define NOTE_CS5 554
+#define NOTE_D5  587
+#define NOTE_E5  659
+#define NOTE_F5  698
+#define NOTE_G5  784
+#define NOTE_A5  880
+
+// --- 2. LA PARTITION (StocKée en FLASH avec PROGMEM) ---
+const int melody[] PROGMEM = {
+  NOTE_A3, NOTE_C4, NOTE_D4, NOTE_D4, NOTE_D4, NOTE_E4, NOTE_F4, NOTE_F4, NOTE_F4, NOTE_G4, NOTE_E4, NOTE_E4, NOTE_D4, NOTE_C4, NOTE_C4, NOTE_D4,
+  NOTE_A3, NOTE_C4, NOTE_D4, NOTE_D4, NOTE_D4, NOTE_F4, NOTE_G4, NOTE_G4, NOTE_G4, NOTE_A4, NOTE_AS4, NOTE_AS4, NOTE_A4, NOTE_G4, NOTE_A4, NOTE_D4
+};
+
+const int rhythm[] PROGMEM = {
+  16, 16, 8, 8, 16, 16, 8, 8, 16, 16, 8, 8, 16, 16, 16, 4,
+  16, 16, 8, 8, 16, 16, 8, 8, 16, 16, 8, 8, 8, 8, 8, 4
+};
+
+void setup() {
+  Robot.begin();
+  Robot.beginSpeaker();
+  Robot.beginTFT();
+  Robot.background(0, 0, 0);
+  Robot.stroke(255, 255, 255);
+  Robot.text("DJ PIRATE LIVE", 20, 10);
+}
+
+void loop() {
+  // On joue les 32 notes de la boucle
+  for (int i = 0; i < 32; i++) {
+    
+    // --- LECTURE DU CLAVIER (SAMPLES) ---
+    int key = Robot.keyboardRead();
+    bool mute = false;
+
+    if (key == BUTTON_UP) {
+      tone(SPEAKER_PIN, 2000, 50); 
+      Robot.text(" SWORD! ", 40, 50);
+    } 
+    else if (key == BUTTON_DOWN) {
+      tone(SPEAKER_PIN, 120, 150); 
+      Robot.text(" BASS!! ", 40, 50);
+    } 
+    else if (key == BUTTON_RIGHT) {
+      for(int s=0; s<5; s++) { tone(SPEAKER_PIN, 800 + (s*150), 10); delay(15); }
+      Robot.text("SCRATCH!", 40, 50);
+    } 
+    else if (key == BUTTON_LEFT) {
+      mute = true;
+      Robot.text(" MUTE   ", 40, 50);
+    }
+
+    // --- LECTURE DU BOUTON ROND (PITCH) ---
+    int djKnob = Robot.knobRead();
+    int currentNote = pgm_read_word(&(melody[i]));
+    int currentRhythm = pgm_read_word(&(rhythm[i]));
+
+    // On transforme le bouton en multiplicateur (0.5x à 2.0x)
+    float pitchShift = map(djKnob, 0, 1023, 50, 200) / 100.0;
+    
+    int noteDuration = 1300 / currentRhythm;
+    int finalFreq = currentNote * pitchShift;
+
+    // --- JOUER LA MUSIQUE ---
+    if (!mute && currentNote != 0) {
+      tone(SPEAKER_PIN, finalFreq, noteDuration * 0.8);
+    }
+
+    // Barre visuelle DJ en bas
+    int barWidth = map(djKnob, 0, 1023, 0, 160);
+    Robot.noFill();
+    Robot.stroke(0, 0, 0);
+    Robot.rect(0, 100, 160, 10); // Effacer
+    Robot.fill(255, 255, 0);
+    Robot.rect(0, 100, barWidth, 10); // Dessiner
+
+    delay(noteDuration * 1.2);
+    noTone(SPEAKER_PIN);
+  }
+}
