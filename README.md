@@ -5,7 +5,11 @@
 <li>Et upload directement (pas besoin de verifier)<br>
   
 ## Music :
-Joue de la musique avec le buzzer: jinglebells et starwars
+Joue de la musique avec le buzzer:
+alarmselect1: utilise les fleches (à droite de l'écran) pour choisir et bouton milieu selectionner
+alarmselect2: utilise le knob (à gauche de la prise usb control board) pour choisir et bouton milieu selectionner
+jinglebells
+starwars
 ## Motors :
 ...
 ## Screen :
