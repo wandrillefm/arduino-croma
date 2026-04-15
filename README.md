@@ -6,10 +6,10 @@
   
 ## Music :
 Joue de la musique avec le buzzer:
-alarmselect1: utilise les fleches (à droite de l'écran) pour choisir et bouton milieu selectionner
-alarmselect2: utilise le knob (à gauche de la prise usb control board) pour choisir et bouton milieu selectionner
-jinglebells
-starwars
+<li>alarmselect1: utilise les fleches (à droite de l'écran) pour choisir et bouton milieu selectionner<br>
+<li>alarmselect2: utilise le knob (à gauche de la prise usb control board) pour choisir et bouton milieu selectionner<br>
+<li>jinglebells
+<li>starwars
 ## Motors :
 ...
 ## Screen :
