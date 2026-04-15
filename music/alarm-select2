@@ -1,0 +1,73 @@
+#include <ArduinoRobot.h>
+#include <Wire.h>
+
+// Liste des noms d'alarmes
+char* nomsAlarmes[] = {"Jingle Bells", "Sirene", "Beep Rapide", "Alerte Retro"};
+
+// Les mélodies correspondantes
+char* melodies[] = {
+  "4e 4e 4e 4- 4e 4e 4e 4- 4e 4g 4C 4d 4e 4f 4f 2-",
+  "8c 8C 8c 8C 8c 8C 8c 8C",
+  "16c 16- 16c 16- 16c 16- 16c 16-",
+  "8g 8e 8c 4G"
+};
+
+int nombreAlarmes = 4;
+int selectionActuelle = 0;
+int derniereSelection = -1;
+
+void setup() {
+  Robot.begin();
+  Robot.beginTFT();
+  Robot.beginSpeaker();
+  
+  Robot.stroke(0, 0, 0);
+  Robot.clearScreen();
+}
+
+void loop() {
+  // 1. Lire la position du "bouton rond" (Potentiomètre)
+  // La valeur va de 0 à 1023
+  int valeurKnob = Robot.knobRead();
+
+  // 2. Transformer cette valeur en un index (0, 1, 2 ou 3)
+  selectionActuelle = map(valeurKnob, 0, 1023, 0, nombreAlarmes - 1);
+
+  // 3. Mettre à jour l'écran seulement si on a tourné le bouton
+  if (selectionActuelle != derniereSelection) {
+    afficherMenu(selectionActuelle);
+    derniereSelection = selectionActuelle;
+    // Petit clic sonore pour le retour tactile
+    Robot.playMelody("32c"); 
+  }
+
+  // 4. Si on appuie sur le bouton du MILIEU, on joue l'alarme
+  if (Robot.keyboardRead() == BUTTON_MIDDLE) {
+    Robot.stroke(255, 0, 0);
+    Robot.text("Lecture...", 10, 80);
+    Robot.playMelody(melodies[selectionActuelle]);
+    
+    // On attend un peu et on rafraîchit l'affichage
+    delay(500);
+    derniereSelection = -1; 
+  }
+
+  delay(10); // Pour la réactivité du bouton
+}
+
+void afficherMenu(int index) {
+  Robot.clearScreen();
+  Robot.stroke(0, 0, 0);
+  Robot.setTextSize(2);
+  Robot.text("SELECTEUR", 10, 10);
+  
+  // Affiche le nom de l'alarme choisie
+  Robot.stroke(0, 0, 255);
+  Robot.text(nomsAlarmes[index], 10, 50);
+  
+  // Instructions en bas
+  Robot.setTextSize(1);
+  Robot.stroke(100, 100, 100);
+  Robot.text("Tournez le bouton rond", 10, 100);
+  Robot.text("Milieu pour choisir", 10, 115);
+}
