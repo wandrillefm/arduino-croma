@@ -9,7 +9,6 @@ int derniereValeur = -1;
 void setup() {
   Robot.begin();
   Robot.beginSpeaker(); 
-  // Pas besoin d'écran, on gagne en vitesse de calcul
 }
 
 void loop() {
