@@ -16,5 +16,5 @@ Joue de la musique avec le buzzer:
 Affiche des trucs sur l'écran
 
 ## Documentation et sources
-https://github.com/arduino-libraries/Robot_Motor
-https://github.com/arduino-libraries/Robot_Control
+<li>https://github.com/arduino-libraries/Robot_Motor
+<li>https://github.com/arduino-libraries/Robot_Control
