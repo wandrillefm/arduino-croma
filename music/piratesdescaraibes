@@ -1,0 +1,83 @@
+#include <ArduinoRobot.h>
+#include <Wire.h>
+#include <avr/pgmspace.h> // Obligatoire pour utiliser PROGMEM
+
+#define SPEAKER_PIN 5
+
+// --- NOTES ---
+#define NOTE_A3  220
+#define NOTE_C4  262
+#define NOTE_D4  294
+#define NOTE_E4  330
+#define NOTE_F4  349
+#define NOTE_G4  392
+#define NOTE_A4  440
+#define NOTE_AS4 466
+#define NOTE_C5  523
+#define NOTE_D5  587
+#define NOTE_E5  659
+#define NOTE_F5  698
+#define NOTE_G5  784
+#define NOTE_A5  880
+#define NOTE_AS5 932
+
+// On stocke les tableaux dans la FLASH (PROGMEM) pour libérer la RAM
+const int melody[] PROGMEM = {
+  // SECTION 1 & 2 : BASSE
+  NOTE_A3, NOTE_C4, NOTE_D4, NOTE_D4, NOTE_D4, NOTE_E4, NOTE_F4, NOTE_F4, NOTE_F4, NOTE_G4, NOTE_E4, NOTE_E4, NOTE_D4, NOTE_C4, NOTE_C4, NOTE_D4,
+  NOTE_A3, NOTE_C4, NOTE_D4, NOTE_D4, NOTE_D4, NOTE_E4, NOTE_F4, NOTE_F4, NOTE_F4, NOTE_G4, NOTE_E4, NOTE_E4, NOTE_D4, NOTE_C4, NOTE_C4, NOTE_D4,
+  // SECTION 3 & 4 : MONTÉE + REFRAIN
+  NOTE_A3, NOTE_C4, NOTE_D4, NOTE_D4, NOTE_D4, NOTE_F4, NOTE_G4, NOTE_G4, NOTE_G4, NOTE_A4, NOTE_AS4, NOTE_AS4, NOTE_A4, NOTE_G4, NOTE_A4, NOTE_D4,
+  NOTE_D4, NOTE_E4, NOTE_F4, NOTE_F4, NOTE_G4, NOTE_A4, NOTE_D4, 0, NOTE_D4, NOTE_F4, NOTE_E4, NOTE_E4, NOTE_F4, NOTE_D4, NOTE_E4, 0,
+  // SECTION 5 & 6 : HAUT
+  NOTE_A4, NOTE_C5, NOTE_D5, NOTE_D5, NOTE_D5, NOTE_E5, NOTE_F5, NOTE_F5, NOTE_F5, NOTE_G5, NOTE_E5, NOTE_E5, NOTE_D5, NOTE_C5, NOTE_C5, NOTE_D5,
+  NOTE_A4, NOTE_C5, NOTE_D5, NOTE_D5, NOTE_D5, NOTE_E5, NOTE_F5, NOTE_F5, NOTE_F5, NOTE_G5, NOTE_E5, NOTE_E5, NOTE_D5, NOTE_C5, NOTE_C5, NOTE_D5,
+  // SECTION 7 & 8 : MONTÉE HAUT + FINAL
+  NOTE_A4, NOTE_C5, NOTE_D5, NOTE_D5, NOTE_D5, NOTE_F5, NOTE_G5, NOTE_G5, NOTE_G5, NOTE_A5, NOTE_AS5, NOTE_AS5, NOTE_A5, NOTE_G5, NOTE_A5, NOTE_D5,
+  NOTE_D5, NOTE_E5, NOTE_F5, NOTE_F5, NOTE_G5, NOTE_A5, NOTE_D5, 0, NOTE_D5, NOTE_F5, NOTE_E5, NOTE_E5, NOTE_F5, NOTE_D5, NOTE_D5, 0
+};
+
+const int rhythm[] PROGMEM = {
+  16, 16, 8, 8, 16, 16, 8, 8, 16, 16, 8, 8, 16, 16, 16, 4,
+  16, 16, 8, 8, 16, 16, 8, 8, 16, 16, 8, 8, 16, 16, 16, 4,
+  16, 16, 8, 8, 16, 16, 8, 8, 16, 16, 8, 8, 8, 8, 8, 4,
+  16, 16, 8, 8, 8, 8, 4, 8, 16, 16, 8, 8, 8, 8, 4, 8,
+  16, 16, 8, 8, 16, 16, 8, 8, 16, 16, 8, 8, 16, 16, 16, 4,
+  16, 16, 8, 8, 16, 16, 8, 8, 16, 16, 8, 8, 16, 16, 16, 4,
+  16, 16, 8, 8, 16, 16, 8, 8, 16, 16, 8, 8, 8, 8, 8, 4,
+  16, 16, 8, 8, 8, 8, 4, 8, 16, 16, 8, 8, 8, 8, 4, 4
+};
+
+void setup() {
+  Robot.begin();
+  Robot.beginSpeaker();
+  Robot.beginTFT();
+  Robot.background(0,0,0);
+  Robot.stroke(255,255,255);
+  Robot.text("MEM OPTIMIZED", 10, 50);
+}
+
+void loop() {
+  for (int i = 0; i < 128; i++) {
+    // Lecture spéciale depuis la mémoire Flash (pgm_read_word)
+    int currentNote = pgm_read_word(&(melody[i]));
+    int currentRhythm = pgm_read_word(&(rhythm[i]));
+
+    if (currentNote == 0) {
+      noTone(SPEAKER_PIN);
+      delay(150);
+      continue;
+    }
+
+    int tempoGeneral = 1300;
+    int noteDuration = tempoGeneral / currentRhythm;
+
+    int playTime = noteDuration;
+    if (currentRhythm <= 4) playTime = noteDuration * 0.75; 
+    
+    tone(SPEAKER_PIN, currentNote, playTime);
+    delay(noteDuration * 1.25);
+    noTone(SPEAKER_PIN);
+  }
+  delay(5000);
+}
