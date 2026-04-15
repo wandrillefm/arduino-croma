@@ -12,7 +12,7 @@ Joue de la musique avec le buzzer:
 <li>starwars
   
 ## Motors :
-...
+est censé faire bouger le robot...
 
 ## Screen :
 Affiche des trucs sur l'écran
