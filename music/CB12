@@ -13,14 +13,9 @@ void loop() {
 
 void playCB12() {
   char melody[] =
-    // BABAB → aigu / pause / grave / pause / aigu / pause / grave / pause / aigu
     "8b 8- 8g 8- 8b 8- 8g 8- 8b- "
-
-    // CCCCC → aigu rapide
     "8b 8b 8b 8b 8b "
-
     // pause
     "2- ";
-    
   Robot.playMelody(melody);
 }
