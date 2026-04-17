@@ -28,3 +28,21 @@ Affiche des trucs sur l'écran
 ## Documentation et sources
 <li>https://github.com/arduino-libraries/Robot_Motor
 <li>https://github.com/arduino-libraries/Robot_Control
+
+
+14/04
+libraries inexistantes?
+uploading marche pas sauf chance après spam sur le bouton reset
+
+15/04
+installé un driver -> ca marche et ca compile
+les roues ne tournent pas, le beep et l'écran marchent
+
+16/04
+petits jeux et tests (voir le repo)
+
+17/04
+test des moteurs avec arduino uno -> ils marchent plutot bien
+donc probleme dans la batterie
+achat de piles rechargeables AA 2000 mAh (bonne autonomie)
+
